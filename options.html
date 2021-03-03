@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html style="width:400px">
+  <head>
+    <style>
+      .grid-container {
+        display: grid;
+        grid-template-columns: auto auto;
+        padding: 5px;
+      }
+      .grid-item {
+        padding: 10px;
+        /* font-size: 15px; */
+        text-align: center;
+      }
+      </style>
+  </head>
+  <body style="width:400px; text-align: center;">
+  <!-- <body style="width:400px;"> -->
+    <div class="grid-container">
+      <div class="grid-item">
+        <input type="color" id="newColor" name="newColor" class="color picker" value="#FCF2CC" >
+        <label for="newColor">Unread color</label>
+      </div>
+      <div class="grid-item">
+        </div>
+      <div class="grid-item">
+        <input type="color" id="historyColor" name="historyColor" class="color picker" value="#DDE5F5">
+        <label for="historyColor">History color</label>
+      </div>
+      <div class="grid-item">
+        <input type="range" id="historyBlur" name="historyBlur" value="3" class="blur picker" min="0" max="10">
+        <label for="historyColor">History blur</label>
+      </div>
+        <div class="grid-item"><input type="color" id="starredColor" name="starredColor" class="color picker" value="#FFDAD7">
+        <label for="starredColor">Starred color</label></div>
+      <div class="grid-item">
+        <input type="range" id="starredBlur" name="starredBlur" value="0" class="blur picker" min="0" max="10">
+          <label for="starredColor">Starred blur</label>
+      </div>
+    </div>
+    
+    <button id="reset">Reset</button>
+    <button id="clear">Clear history</button>
+    </div>
+
+  </body>
+  <script src="options.js"></script>
+</html>
