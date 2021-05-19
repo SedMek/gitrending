@@ -65,6 +65,7 @@ function watchPickerChange(event, pickerId) {
     // triggers only when closing the color selection
     console.log(pickerId + " updated");
     // we store the selected value
+    console.log("set");
     chrome.storage.sync.set({[pickerId]: isNumeric(event.target.value) ? logslider(event.target.value) : event.target.value}, function() {
         if (chrome.runtime.lastError){
             console.log(chrome.runtime.lastError);
@@ -91,6 +92,7 @@ async function resetOptions(){
 
 function clearHistory(){
     if (confirm("Do you confirm deleting the history?")) {
+        console.log("set");
         chrome.storage.sync.set({history : []}, function() {
             if (chrome.runtime.lastError)
                 console.log(chrome.runtime.lastError);
@@ -109,7 +111,7 @@ function saveOptions(){
         let pickerId = picker.getAttribute("id");
         selectedParams[pickerId] = picker.value;
     }
-
+    console.log("set");
     chrome.storage.sync.set(selectedParams, function() {
         if (chrome.runtime.lastError)
             console.log(chrome.runtime.lastError);
