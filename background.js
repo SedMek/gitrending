@@ -28,6 +28,10 @@ chrome.runtime.onInstalled.addListener(function () {
 		console.log("starredBlur is " + defaultBlurs.starredBlur);
 	});
 
+	chrome.storage.sync.set({ sort: false }, function () {
+		console.log("sort is " + defaultBlurs.starredBlur);
+	});
+
 	chrome.declarativeContent.onPageChanged.removeRules(undefined, function () {
 		chrome.declarativeContent.onPageChanged.addRules([
 			{

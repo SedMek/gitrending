@@ -38,6 +38,10 @@ function applyParamsOld(history, params) {
 		} else {
 			// new
 			addEffects(article, params.new);
+			// SORTING HERE, IMPLEMENTATION NOT FINISHED
+			if (params.sort) {
+				article.parentNode.prepend(article);
+			}
 		}
 	}
 }
