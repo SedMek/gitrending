@@ -28,7 +28,7 @@ chrome.runtime.onInstalled.addListener(function () {
 		console.log("starredBlur is " + defaultBlurs.starredBlur);
 	});
 
-	chrome.storage.sync.set({ sort: false }, function () {
+	chrome.storage.sync.set({ sort: true }, function () {
 		console.log("sort is " + defaultBlurs.starredBlur);
 	});
 

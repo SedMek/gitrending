@@ -38,10 +38,6 @@ function applyParamsOld(history, params) {
 		} else {
 			// new
 			addEffects(article, params.new);
-			// SORTING HERE, IMPLEMENTATION NOT FINISHED
-			if (params.sort) {
-				article.parentNode.prepend(article);
-			}
 		}
 	}
 }
@@ -89,10 +85,12 @@ function updateParams(object) {
 	if (object.hasOwnProperty("newBlur")) params.new.blur = object.newBlur;
 	if (object.hasOwnProperty("historyBlur")) params.history.blur = object.historyBlur;
 	if (object.hasOwnProperty("starredBlur")) params.starred.blur = object.starredBlur;
+
+	if (object.hasOwnProperty("sort")) params.sort = object.sort;
 }
 
 function main() {
-	// console.log("hello from main");
+	console.log("hello from main");
 	// Add the header in the end of the list
 	let headers = document.getElementsByClassName("Box-header");
 	if (headers.length < 2) {
@@ -104,10 +102,10 @@ function main() {
 	let articles = document.getElementsByTagName("article");
 
 	chrome.storage.sync.get(
-		["newColor", "historyColor", "starredColor", "historyBlur", "starredBlur"],
+		["newColor", "historyColor", "starredColor", "historyBlur", "starredBlur", "sort"],
 		function (data) {
 			console.log("getting default settings");
-
+			console.log(data); //tmp
 			// read stored options
 			updateParams(data);
 			syncFetch("history", function (data) {
@@ -136,6 +134,18 @@ function main() {
 							},
 							false
 						);
+						article.addEventListener(
+							"auxclick",
+							function () {
+								console.log("should be added to history {middle click style} " + repo);
+								addToHistory(repo);
+							},
+							false
+						);
+						// SORTING HERE, IMPLEMENTATION NOT FINISHED
+						if (params.sort) {
+							article.parentNode.prepend(article);
+						}
 					}
 				}
 			});
