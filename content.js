@@ -96,7 +96,7 @@ function main() {
 	if (headers.length < 2) {
 		let header = headers[0];
 		let headerClone = header.cloneNode(true); // True to perform deep clone. i.e clone children too
-		document.getElementsByClassName("Box")[1].appendChild(headerClone); // aappend the header to the end
+		document.getElementsByClassName("Box")[1].appendChild(headerClone); // append the header to the end
 	}
 
 	let articles = document.getElementsByTagName("article");
