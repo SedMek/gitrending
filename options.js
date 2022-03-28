@@ -3,20 +3,12 @@ const defaultColors = {
 	historyColor: "#DDE5F5",
 	starredColor: "#FFDAD7",
 };
-
 const defaultBlurs = {
 	historyBlur: 3,
 	starredBlur: 0,
 };
-
 const defaultSort = true; 
 
-function typeParams(color, blur) {
-	return {
-		color: color,
-		blur: blur,
-	};
-}
 
 // UTILS
 function isNumeric(num) {
@@ -26,13 +18,10 @@ function isNumeric(num) {
 function logslider(position) {
 	var minp = 0;
 	var maxp = 10;
-
 	var minv = Math.log(1);
 	var maxv = Math.log(100);
-
 	// calculate adjustment factor
 	var scale = (maxv - minv) / (maxp - minp);
-
 	return Math.exp(minv + scale * (position - minp)) - 1;
 }
 
@@ -45,13 +34,13 @@ function sendMessage(op, options) {
 		msg = { op: op };
 		if (options) msg.options = options;
 		chrome.tabs.sendMessage(tabs[0].id, msg);
-		console.log("Message should be sent");
+		console.debug("Message should be sent" , msg);
 	});
 }
 
 function watchPickerInput(event, pickerId) {
 	// triggers when you move the color, even without closing the color selection
-	console.log("new " + pickerId + " tested: " + event.target.value);
+	console.debug("new " + pickerId + " tested: " + event.target.value);
 	// we want to minimize write operation on chrome storage, so here we only send a message to
 	// update the page without storing
 	sendMessage("apply", {
@@ -61,14 +50,13 @@ function watchPickerInput(event, pickerId) {
 
 function watchPickerChange(event, pickerId) {
 	// triggers only when closing the color selection
-	console.log(pickerId + " updated");
+	console.debug(pickerId + " updated");
 	// we store the selected value
-	console.log("set");
 	chrome.storage.sync.set(
 		{ [pickerId]: isNumeric(event.target.value) ? logslider(event.target.value) : event.target.value },
 		function () {
 			if (chrome.runtime.lastError) {
-				console.log(chrome.runtime.lastError);
+				console.error(chrome.runtime.lastError);
 			} else {
 				console.log(pickerId + " is " + event.target.value);
 			}
@@ -77,19 +65,20 @@ function watchPickerChange(event, pickerId) {
 }
 
 function watchCheckChange(event, checkId) {
-	console.log(checkId + " updated");
+	console.debug(checkId + " updated");
 	// we store the selected value
-	console.log("set");
 	chrome.storage.sync.set(
 		{ [checkId]: event.target.checked },
 		function () {
 			if (chrome.runtime.lastError) {
-				console.log(chrome.runtime.lastError);
+				console.error(chrome.runtime.lastError);
 			} else {
 				console.log(checkId + " is " + event.target.checked);
 			}
 		}
 	);
+	// we send a message to reflect the change immediately on the page
+	sendMessage("refresh");
 }
 
 async function resetOptions() {
@@ -110,10 +99,8 @@ async function resetOptions() {
 
 function clearHistory() {
 	if (confirm("Do you confirm deleting the history?")) {
-		console.log("set");
 		chrome.storage.sync.set({ history: [] }, function () {
-			if (chrome.runtime.lastError) console.log(chrome.runtime.lastError);
-			// sendMessage("apply");
+			if (chrome.runtime.lastError) console.error(chrome.runtime.lastError);
 			else console.log("History cleared successfully");
 		});
 	}
@@ -127,22 +114,19 @@ function saveOptions() {
 		let pickerId = picker.getAttribute("id");
 		selectedParams[pickerId] = picker.value;
 	}
-	console.log("set");
 	selectedParams["sort"] = document.getElementById("sort").checked;
 	chrome.storage.sync.set(selectedParams, function () {
-		if (chrome.runtime.lastError) console.log(chrome.runtime.lastError);
+		if (chrome.runtime.lastError) console.error(chrome.runtime.lastError);
 		else console.log("Parameters saved!");
 		console.log(selectedParams);
 	});
 }
 
 function displaySelectedOptions() {
-	console.log("displaying options");
+	console.debug("displaying options");
 	let colorPickers = document.getElementsByClassName("color picker");
-
 	for (let colorPicker of colorPickers) {
 		let colorPickerId = colorPicker.getAttribute("id");
-
 		chrome.storage.sync.get(colorPickerId, function (data) {
 			let color = data.hasOwnProperty(colorPickerId) ? data[colorPickerId] : defaultColors[colorPickerId];
 			colorPicker.value = color;
@@ -150,10 +134,8 @@ function displaySelectedOptions() {
 	}
 
 	let blurPickers = document.getElementsByClassName("blur picker");
-
 	for (let blurPicker of blurPickers) {
 		let blurPickerId = blurPicker.getAttribute("id");
-
 		chrome.storage.sync.get(blurPickerId, function (data) {
 			let blur = data.hasOwnProperty(blurPickerId) ? data[blurPickerId] : defaultBlurs[blurPickerId];
 			blurPicker.value = blur;
@@ -184,7 +166,7 @@ function constructOptions() {
 		picker.addEventListener("change", function (event) {
 			watchPickerChange(event, pickerId);
 		});
-		console.log(pickerId + "Listeners set");
+		console.debug(pickerId + "Listeners set");
 	}
 
 	let checks = document.getElementsByClassName("check");
@@ -193,14 +175,15 @@ function constructOptions() {
 		check.addEventListener("change", function (event) {
 			watchCheckChange(event, checkId);
 		});
-		console.log(checkId + "Listeners set");
+		console.debug(checkId + "Listeners set");
 	}
 
 	let resetButton = document.getElementById("reset");
 	resetButton.addEventListener("click", resetOptions);
-
 	let clearButton = document.getElementById("clear");
 	clearButton.addEventListener("click", clearHistory);
+	console.debug("Button Listeners set");
+
 }
 
 constructOptions();
