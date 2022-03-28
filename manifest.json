@@ -9,10 +9,9 @@
 		}
 	],
 	"background": {
-		"scripts": ["background.js"],
-		"persistent": false
+		"service_worker": "background.js"
 	},
-	"page_action": {
+	"action": {
 		"default_popup": "options.html",
 		"default_icon": {
 			"16": "images/icon16.png",
@@ -29,5 +28,5 @@
 	},
 	"options_page": "options.html",
 	"permissions": ["storage", "activeTab", "declarativeContent"],
-	"manifest_version": 2
+	"manifest_version": 3
 }
