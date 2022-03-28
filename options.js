@@ -9,11 +9,7 @@ const defaultBlurs = {
 	starredBlur: 0,
 };
 
-const defaultParams = {
-	new: typeParams("#FCF2CC", 0),
-	history: typeParams("#DDE5F5", 3),
-	starred: typeParams("#FFDAD7", 0),
-};
+const defaultSort = true; 
 
 function typeParams(color, blur) {
 	return {
@@ -80,6 +76,22 @@ function watchPickerChange(event, pickerId) {
 	);
 }
 
+function watchCheckChange(event, checkId) {
+	console.log(checkId + " updated");
+	// we store the selected value
+	console.log("set");
+	chrome.storage.sync.set(
+		{ [checkId]: event.target.checked },
+		function () {
+			if (chrome.runtime.lastError) {
+				console.log(chrome.runtime.lastError);
+			} else {
+				console.log(checkId + " is " + event.target.checked);
+			}
+		}
+	);
+}
+
 async function resetOptions() {
 	colorPickers = document.getElementsByClassName("color picker");
 	for (let colorPicker of colorPickers) {
@@ -91,6 +103,7 @@ async function resetOptions() {
 		let blurPickerId = blurPicker.getAttribute("id");
 		blurPicker.value = defaultBlurs[blurPickerId];
 	}
+	document.getElementById("sort").checked = defaultSort;
 	console.log("Using default options!");
 	saveOptions();
 }
@@ -163,7 +176,6 @@ function constructOptions() {
 
 	// add event listeners
 	let pickers = document.getElementsByClassName("picker");
-
 	for (let picker of pickers) {
 		let pickerId = picker.getAttribute("id");
 		picker.addEventListener("input", function (event) {
@@ -173,6 +185,15 @@ function constructOptions() {
 			watchPickerChange(event, pickerId);
 		});
 		console.log(pickerId + "Listeners set");
+	}
+
+	let checks = document.getElementsByClassName("check");
+	for (let check of checks) {
+		let checkId = check.getAttribute("id");
+		check.addEventListener("change", function (event) {
+			watchCheckChange(event, checkId);
+		});
+		console.log(checkId + "Listeners set");
 	}
 
 	let resetButton = document.getElementById("reset");
